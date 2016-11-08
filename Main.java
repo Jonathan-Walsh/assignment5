@@ -40,8 +40,11 @@ public class Main extends Application {
 
 	public static void main(String[] args) throws InvalidCritterException {
 		Critter.makeCritter("Craig");
-		for(int i=0;i<20;i++)
+		for(int i=0;i<12;i++)
 			Critter.makeCritter("Critter1");
+			Critter.makeCritter("Critter2");
+			Critter.makeCritter("Critter3");
+			Critter.makeCritter("Critter4");
 		launch(args);
 	}
 	
@@ -104,8 +107,8 @@ public class Main extends Application {
 //Create grid
 	AnchorPane grid = new AnchorPane();
 	GridWorld.drawLines(grid);
-	anchorPane.setBottomAnchor(grid, 25.0);
-	anchorPane.setLeftAnchor(grid, 25.0);
+	anchorPane.setBottomAnchor(grid, 0.0);
+	anchorPane.setLeftAnchor(grid, 0.0);
     components.add(grid);
 
     anBtn.setText("Animation");
@@ -147,7 +150,6 @@ public class Main extends Application {
     			anchorPane.getChildren().clear();
     			anchorPane.getChildren().addAll(components);
     			GridWorld.drawCritters(anchorPane);
-    			   primaryStage.show();
     			counter=1;
     			totalcount++;
                 String s = Critter.runStats(Critter.getPopulation());
@@ -162,6 +164,7 @@ public class Main extends Application {
     		}
     	}
     });
+    
     runStatsBtn.setText("Run Stats");
     runStatsBtn.setOnAction(new EventHandler<ActionEvent>(){
     	public void handle(ActionEvent event){
@@ -277,7 +280,8 @@ public class Main extends Application {
     anchorPane.setBottomAnchor(runStatsBtn,350.0);
    // anchorPane.setRightAnchor(runStatsText, 200.0);
    // anchorPane.setBottomAnchor(runStatsText, 200.0);
-   primaryStage.setScene(new Scene(anchorPane, 1000, 650));
+    Scene scene = new Scene(anchorPane, 1000, 650);
+   primaryStage.setScene(scene);
    primaryStage.show();
 
 	 }

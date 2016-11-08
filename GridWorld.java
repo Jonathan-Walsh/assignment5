@@ -17,6 +17,7 @@ import java.util.List;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Ellipse;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
@@ -29,34 +30,36 @@ import javafx.scene.shape.Rectangle;
  */
 
 public class GridWorld {
-
+	
+	static double h = Params.world_height;
+	static double w = Params.world_width;
 	/**
 	 * This method draws the lines used as an outline for the 'world'
 	 * @param anchorPane : the AnchorPane used in our Main.java
 	 *    to hold all of the different items
 	 */
 	public static void drawLines(AnchorPane anchorPane) {
-		Rectangle background = new Rectangle(600, 600);
-		background.setFill(Color.WHITE);
+		Rectangle background = new Rectangle(650.0, 650.0);
+		background.setFill(Color.GRAY);
 		anchorPane.getChildren().add(background);
 		AnchorPane.setBottomAnchor(background, 1.0);
 		AnchorPane.setLeftAnchor(background, 0.0);
-		for(int i=0;i<101;i++)
+		for(int i=0;i<h + 1;i++)
 		{
 			Line line = new Line();
 			line.setStartX(0.0);
-			line.setStartY(i*6);
-			line.setEndX(600.0);
-			line.setEndY(i*6);
+			line.setStartY(i*(650.0/h));
+			line.setEndX(650.0);
+			line.setEndY(i*(650.0/h));
 			anchorPane.getChildren().add(line);
 		}
-		for(int i=0;i<101;i++)
+		for(int i=0;i<w + 1;i++)
 		{
 			Line line = new Line();
-			line.setStartX(i*6);
+			line.setStartX(i*(650.0/w));
 			line.setStartY(0);
-			line.setEndX(i*6);
-			line.setEndY(600);
+			line.setEndX(i*(650.0/w));
+			line.setEndY(650.0);
 			anchorPane.getChildren().add(line);
 		}
 	}
@@ -81,10 +84,10 @@ public class GridWorld {
 	 * @param c : the current Critter that is being drawn
 	 */
 	private static void drawCritter(AnchorPane anchorPane, Critter c) {
-		double xTBP=25;
-		double yTBP=620;
-		yTBP-=(c.getYCoord()*6);
-		xTBP+=(c.getXCoord()*6);
+		double xTBP=0;
+		double yTBP=650.0;
+		yTBP-=(c.getYCoord()*(650.0/h));
+		xTBP+=(c.getXCoord()*(650.0/w));
 		if(c.viewShape().toString().equalsIgnoreCase("circle")) {
 			drawCircle(anchorPane, xTBP, yTBP, c);
 		}
@@ -116,12 +119,12 @@ public class GridWorld {
 	 */
 	@SuppressWarnings("static-access")
 	private static void drawCircle(AnchorPane anchorPane, double xTBP, double yTBP, Critter c) {
-		Circle circle = new Circle(2, c.viewColor());
+		Ellipse circle = new Ellipse(2* ((650.0/w) / 6.0), 2* ((650.0/h) / 6.0));
 		circle.setFill(c.viewFillColor());
 		circle.setStroke(c.viewOutlineColor());
 		anchorPane.getChildren().add(circle);
-		anchorPane.setBottomAnchor(circle, yTBP + .5);
-	 	anchorPane.setLeftAnchor(circle, xTBP + .5);
+		anchorPane.setBottomAnchor(circle, yTBP + 1.0 * ((650.0/h) / 6.0));
+	 	anchorPane.setLeftAnchor(circle, xTBP + 1.0 * ((650.0/w) / 6.0));
 	}
 	
 	/**
@@ -133,12 +136,14 @@ public class GridWorld {
 	 */
 	@SuppressWarnings("static-access")
 	private static void drawSquare(AnchorPane anchorPane, double xTBP, double yTBP, Critter c) {
-		Rectangle square = new Rectangle(5.0,5.0,c.viewColor());
+		Rectangle square = new Rectangle(6.0 * ((650.0/w) / 6.0),6.0 * ((650.0/h) / 6.0),c.viewColor());
 		square.setFill(c.viewFillColor());
 		square.setStroke(c.viewOutlineColor());
 		anchorPane.getChildren().add(square);
 		anchorPane.setBottomAnchor(square, yTBP);
 	 	anchorPane.setLeftAnchor(square, xTBP);
+	 	System.out.println(xTBP);
+	 	System.out.println(yTBP);
 	}
 	
 	/**
@@ -155,11 +160,12 @@ public class GridWorld {
 		triangle.setStroke(c.viewOutlineColor());
 		triangle.getPoints().addAll(new Double[]{
 		    0.0, 0.0,
-		    5.0, 0.0,
-		    2.5, 5.0 });
+		    5.0 * ((650.0/w) / 6.0), 0.0,
+		    2.5 * ((650.0/w) / 6.0), 5.0 * ((650.0/h) / 6.0)
+		    });
 		anchorPane.getChildren().add(triangle);
-		anchorPane.setBottomAnchor(triangle, yTBP - 1.5);
-	 	anchorPane.setLeftAnchor(triangle, xTBP - .75);
+		anchorPane.setBottomAnchor(triangle, yTBP);
+	 	anchorPane.setLeftAnchor(triangle, xTBP + .25 * ((650.0/w) / 6.0));
 	}
 	
 	/**
@@ -175,13 +181,14 @@ public class GridWorld {
 		diamond.setFill(c.viewFillColor());
 		diamond.setStroke(c.viewOutlineColor());
 		diamond.getPoints().addAll(new Double[]{
-		    0.0, 2.5,
-		    2.5, 5.0,
-		    5.0, 2.5,
-		    2.5, 0.0 });
+		    0.0 * ((650.0/w) / 6.0), 2.5 * ((650.0/h) / 6.0),
+		    2.5 * ((650.0/w) / 6.0), 5.0 * ((650.0/h) / 6.0),
+		    5.0 * ((650.0/w) / 6.0), 2.5 * ((650.0/h) / 6.0),
+		    2.5 * ((650.0/w) / 6.0), 0.0 
+		    });
 		anchorPane.getChildren().add(diamond);
-		anchorPane.setBottomAnchor(diamond, yTBP - 1);
-	 	anchorPane.setLeftAnchor(diamond, xTBP - .5);
+		anchorPane.setBottomAnchor(diamond, yTBP + .25 * ((650.0/h) / 6.0));
+	 	anchorPane.setLeftAnchor(diamond, xTBP + .25 * ((650.0/w) / 6.0));
 	}
 	
 	/**
@@ -197,20 +204,20 @@ public class GridWorld {
 		star.setFill(c.viewFillColor());
 		star.setStroke(c.viewOutlineColor());
 		star.getPoints().addAll(new Double[] {
-			2.5, 0.0,
-			3.3, 2.0,
-			5.0, 2.7,
-			3.7, 3.2,
-			4.0, 5.0,
-			2.5, 3.8,
-			1.0, 5.0,
-			1.3, 3.2,
-			0.0, 2.7,
-			1.7, 2.0
+			2.5 * ((650.0/w) / 6.0), 0.0 * ((650.0/h) / 6.0),
+			3.3 * ((650.0/w) / 6.0), 2.0 * ((650.0/h) / 6.0),
+			5.0 * ((650.0/w) / 6.0), 2.7 * ((650.0/h) / 6.0),
+			3.7 * ((650.0/w) / 6.0), 3.2 * ((650.0/h) / 6.0),
+			4.0 * ((650.0/w) / 6.0), 5.0 * ((650.0/h) / 6.0),
+			2.5 * ((650.0/w) / 6.0), 3.8 * ((650.0/h) / 6.0),
+			1.0 * ((650.0/w) / 6.0), 5.0 * ((650.0/h) / 6.0),
+			1.3 * ((650.0/w) / 6.0), 3.2 * ((650.0/h) / 6.0),
+			0.0 * ((650.0/w) / 6.0), 2.7 * ((650.0/h) / 6.0),
+			1.7 * ((650.0/w) / 6.0), 2.0 * ((650.0/h) / 6.0)
 		});
 		anchorPane.getChildren().add(star);
-		anchorPane.setBottomAnchor(star, yTBP - 1.5);
-		anchorPane.setLeftAnchor(star, xTBP - 1.5);
+		anchorPane.setBottomAnchor(star, yTBP + .12 * ((650.0/h) / 6.0));
+		anchorPane.setLeftAnchor(star, xTBP + .12 * ((650.0/w) / 6.0));
 	}
 	
 }
