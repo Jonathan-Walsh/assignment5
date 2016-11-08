@@ -1,5 +1,16 @@
+/* CRITTERS <Main.java>
+ * EE422C Project 5 submission by
+ * Replace <...> with your actual data.
+ * Jonathan Walsh
+ * jlw4699
+ * 16450
+ * Tim Yoder
+ * tjy263
+ * 16450
+ * Slip days used: <0>
+ * Fall 2016
+ */
 package assignment5;
-
 
 
 import java.util.Iterator;
@@ -26,36 +37,48 @@ public class Main extends Application {
 	public static void main(String[] args) throws InvalidCritterException {
 		Critter.makeCritter("Craig");
 		for(int i=0;i<20;i++)
-			Critter.makeCritter("Critter2");
+			Critter.makeCritter("Critter1");
 		launch(args);
-		
-		
 	}
+	
 	
 	 public int counter=1;
 	 public int totalcount=0;
 	 public TextField userTextField;
 	 public AnchorPane anchorPane = new AnchorPane();
+	 public AnchorPane grid = new AnchorPane();
+	 
+	 
 	 @SuppressWarnings("static-access")
 	public void start(Stage primaryStage) {
+		 
+//Sets the color of the anchorPane to burnt orange
+	anchorPane.setStyle("-fx-background-color: #cf5300");
+//Initialize all of the buttons
+	Button btn0 = new Button();
+	Button btn1 = new Button();
+	Button btn2 = new Button();
+	Button btn3 = new Button();
+	Button btn4 = new Button();
+	Button btn5 = new Button();
+	TextField stepText = new TextField();
+	stepText.setPromptText("Number of time steps (Default: 1)");
 
-	userTextField = new TextField(counter+ " ");
-   Button btn0 = new Button();
+//Create grid
+	GridWorld.drawLines(grid);
+	anchorPane.setBottomAnchor(grid, 25.0);
+	anchorPane.setLeftAnchor(grid, 25.0);
+	
 	btn0.setText("Click to Increment");
     btn0.setOnAction(new EventHandler<ActionEvent>() {
    	 
         @Override
         public void handle(ActionEvent event) {
             counter++;
-            userTextField = new TextField(counter+ " ");
-            anchorPane.getChildren().remove(6);
-            anchorPane.getChildren().add(6,userTextField);
-            anchorPane.setBottomAnchor(userTextField,20.0);
-            anchorPane.setRightAnchor(userTextField,400.0);
         }
     });
     
-	Button btn1 = new Button();
+
     btn1.setText("Quit");
     btn1.setOnAction(new EventHandler<ActionEvent>() {
     	public void handle(ActionEvent event) {
@@ -63,92 +86,43 @@ public class Main extends Application {
     	}
     });
     
-    Button btn2 = new Button();
+ 
     btn2.setText("Show");
     btn2.setOnAction(new EventHandler<ActionEvent>(){
+    	
     	public void handle(ActionEvent event){
-
-    		List<Critter> pop = Critter.getPopulation();
-    		System.out.println(pop.size());
-    		for(Critter c:pop)
-    		{
-    			double xTBP=100;
-    			double yTBP=750;
-    			yTBP-=(c.getYCoord()*6);
-    			xTBP+=(c.getXCoord()*4);
-    			if(c.viewShape().toString().equalsIgnoreCase("circle"))
-    			{
-    				Circle circle = new Circle(5, c.viewColor());
-    				circle.setFill(c.viewFillColor());
-    				circle.setStroke(c.viewOutlineColor());
-    				anchorPane.getChildren().add(circle);
-    				anchorPane.setBottomAnchor(circle, yTBP);
-    			 	anchorPane.setLeftAnchor(circle, xTBP);
-    			}
-    			else if(c.viewShape().toString().equalsIgnoreCase("square"))
-    			{
-    				Rectangle square = new Rectangle(5.0,5.0,c.viewColor());
-    				square.setFill(c.viewFillColor());
-    				square.setStroke(c.viewOutlineColor());
-    				anchorPane.getChildren().add(square);
-    				anchorPane.setBottomAnchor(square, yTBP);
-    			 	anchorPane.setLeftAnchor(square, xTBP);
-    			}
-    			else if(c.viewShape().toString().equalsIgnoreCase("triangle"))
-    			{
-    				Polygon triangle = new Polygon();
-    				triangle.setFill(c.viewFillColor());
-    				triangle.setStroke(c.viewOutlineColor());
-    				triangle.getPoints().addAll(new Double[]{
-    				    0.0, 0.0,
-    				    5.0, 0.0,
-    				    2.5, 5.0 });
-    				anchorPane.getChildren().add(triangle);
-    				anchorPane.setBottomAnchor(triangle, yTBP);
-    			 	anchorPane.setLeftAnchor(triangle, xTBP);
-    			}
-    			else if(c.viewShape().toString().equalsIgnoreCase("diamond"))
-    			{
-    				Polygon diamond = new Polygon();
-    				diamond.setFill(c.viewFillColor());
-    				diamond.setStroke(c.viewOutlineColor());
-    				diamond.getPoints().addAll(new Double[]{
-    				    0.0, 2.5,
-    				    2.5, 5.0,
-    				    5.0, 2.5,
-    				    2.5, 0.0 });
-    				anchorPane.getChildren().add(diamond);
-    				anchorPane.setBottomAnchor(diamond, yTBP);
-    			 	anchorPane.setLeftAnchor(diamond, xTBP);
-    			}
-    			else
-    			{
-    				//TODO: Implement star shape
-    			}
-    		}
-    		
+    		GridWorld.drawCritters(anchorPane);
     	}
     });
     
-    Button btn3 = new Button();
+ 
     btn3.setText("Step");
     btn3.setOnAction(new EventHandler<ActionEvent>(){
     	public void handle(ActionEvent event){
-    		for(int i=0;i<counter;i++)
-    		{Critter.worldTimeStep();}
+    		anchorPane.getChildren().clear();
+    		anchorPane.getChildren().addAll(btn1,btn2,btn3,btn4,btn5,btn0,stepText,grid);
+    		int steps = 1;
+    		try {
+    			steps = Integer.parseInt(stepText.getText());
+    		}
+    		catch (NumberFormatException e) {
+    			//Do nothing
+    		}
+    		catch (NullPointerException e2) {
+    			//Do nothing
+    		}
+    		for(int i=0;i<steps;i++){
+    			Critter.worldTimeStep();
+    		}
+    		GridWorld.drawCritters(anchorPane);
     		counter=1;
-            userTextField = new TextField(counter+ " ");
-            anchorPane.getChildren().remove(6);
-            anchorPane.getChildren().add(6,userTextField);
-            anchorPane.setBottomAnchor(userTextField,20.0);
-            anchorPane.setRightAnchor(userTextField,400.0);
             totalcount++;
     	}
     });
     
-    Button btn4 = new Button();
+
     btn4.setText("Seed");
-    Button btn5 = new Button();
+
     btn5.setText("Make");
     
 //    btn0.setOnAction(new EventHandler<ActionEvent>() {
@@ -160,48 +134,29 @@ public class Main extends Application {
 //            = new TextField(counter+ " ");
 //        }
 //    });
-	GridPane gridPane = new GridPane();
-	gridPane.setGridLinesVisible(true);
-	gridPane.setStyle("-fx-background-color: white; -fx-grid-lines-visible: true");
+    
+    anchorPane.getChildren().addAll(btn1,btn2,btn3,btn4,btn5,btn0,stepText, grid);
 
-    anchorPane.getChildren().addAll(btn1,btn2,btn3,btn4,btn5,btn0,userTextField);
-	for(int i=0;i<100;i++)
-	{
-		Line line = new Line();
-		line.setStartX(100.0);
-		line.setStartY(i*6);
-		line.setEndX(700.0);
-		line.setEndY(i*6);
-		anchorPane.getChildren().add(line);
-	}
-	for(int i=0;i<100;i++)
-	{
-		Line line = new Line();
-		line.setStartX(100.0+i*6);
-		line.setStartY(0);
-		line.setEndX(100+i*6);
-		line.setEndY(600);
-		anchorPane.getChildren().add(line);
-	}
+	GridWorld.drawCritters(anchorPane);
     anchorPane.setBottomAnchor(btn1,100.0);
-    anchorPane.setBottomAnchor(btn2,100.0);
-    anchorPane.setBottomAnchor(btn3,100.0);
-    anchorPane.setBottomAnchor(btn4,100.0);
-    anchorPane.setBottomAnchor(btn5,100.0);
+    anchorPane.setBottomAnchor(btn2,200.0);
+    anchorPane.setBottomAnchor(btn3,300.0);
+    anchorPane.setBottomAnchor(btn4,400.0);
+    anchorPane.setBottomAnchor(btn5,500.0);
     anchorPane.setRightAnchor(btn1,200.0);
-    anchorPane.setRightAnchor(btn2,300.0);
-    anchorPane.setRightAnchor(btn3,400.0);
-    anchorPane.setRightAnchor(btn4,500.0);
-    anchorPane.setRightAnchor(btn5,600.0);
-    anchorPane.setBottomAnchor(btn0,50.0);
-    anchorPane.setRightAnchor(btn0,400.0);
-    anchorPane.setBottomAnchor(userTextField,20.0);
-    anchorPane.setRightAnchor(userTextField,400.0);
-    anchorPane.setBottomAnchor(gridPane, 200.0);
-    anchorPane.setRightAnchor(gridPane, 700.0);
-   primaryStage.setScene(new Scene(anchorPane, 800, 800));
+    anchorPane.setRightAnchor(btn2,200.0);
+    anchorPane.setRightAnchor(btn3,200.0);
+    anchorPane.setRightAnchor(btn4,200.0);
+    anchorPane.setRightAnchor(btn5,200.0);
+    anchorPane.setBottomAnchor(btn0,300.0);
+    anchorPane.setRightAnchor(btn0,50.0);
+    anchorPane.setBottomAnchor(stepText,250.0);
+    anchorPane.setRightAnchor(stepText,75.0);
+   
+   primaryStage.setScene(new Scene(anchorPane, 1000, 650));
    primaryStage.show();
 
 	 }
 
+	 
 }

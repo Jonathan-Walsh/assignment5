@@ -1,5 +1,5 @@
 /* CRITTERS <Critter1.java>
- * EE422C Project 4 submission by
+ * EE422C Project 5 submission by
  * Replace <...> with your actual data.
  * Jonathan Walsh
  * jlw4699
@@ -43,8 +43,8 @@ public class Critter1 extends Critter
 	public CritterShape viewShape() { return CritterShape.STAR; }
 
 	@Override
-	public javafx.scene.paint.Color viewOutlineColor() { return javafx.scene.paint.Color.GOLD; }
+	public javafx.scene.paint.Color viewOutlineColor() { return javafx.scene.paint.Color.BLACK; }
 	
 	@Override
-	public javafx.scene.paint.Color viewFillColor() { return javafx.scene.paint.Color.ANTIQUEWHITE; }
+	public javafx.scene.paint.Color viewFillColor() { return javafx.scene.paint.Color.GOLD; }
 }
