@@ -26,6 +26,7 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Control;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
@@ -75,36 +76,85 @@ public class Main extends Application {
 	components.add(makeBtn);
 	Button anBtn= new Button();
 	components.add(anBtn);
-
-	TextField anTxt = new TextField();
-	anTxt.setPromptText("Number of time steps per second: 1");
+	final ComboBox<String> comboBox = new ComboBox<String>();
+	comboBox.getItems().addAll(
+			"Craig",
+			"Algae",
+			"Critter1",
+			"Critter2",
+			"Critter3",
+			"Critter4");
+	comboBox.setPromptText("Critter Type");
+    comboBox.setEditable(true);
+    comboBox.setPrefWidth(250);
+    comboBox.setMinWidth(50);
+    comboBox.setMaxWidth(400);
+    comboBox.setEditable(false);
+	components.add(comboBox);
+	Label anTxt = new Label();
+	anTxt.setText("Number of time steps per second:");
 	anTxt.setMinWidth(50);
 	anTxt.setPrefWidth(250);
 	anTxt.setMaxWidth(400);
+	anTxt.setTextFill(Color.WHITE);
 	components.add(anTxt);
+	TextField anTxtTBE = new TextField();
+	anTxtTBE.setMinWidth(50);
+	anTxtTBE.setPrefWidth(250);
+	anTxtTBE.setMaxWidth(400);
+	components.add(anTxtTBE);
+	TextField makeTxtN = new TextField();
+	makeTxtN.setMinWidth(50);
+	makeTxtN.setPrefWidth(250);
+	makeTxtN.setMaxWidth(400);
+	components.add(makeTxtN);
+	Label makeTxtNL = new Label();
+	makeTxtNL.setText("Enter the number of  Critter to be created");
+	makeTxtNL.setMinWidth(50);
+	makeTxtNL.setPrefWidth(250);
+	makeTxtNL.setMaxWidth(400);
+	makeTxtNL.setTextFill(Color.WHITE);
+	components.add(makeTxtNL);
 	TextField stepTxt = new TextField();
-	stepTxt.setPromptText("Number of time steps : 1");
 	stepTxt.setMinWidth(50);
 	stepTxt.setPrefWidth(250);
 	stepTxt.setMaxWidth(400);
 	components.add(stepTxt);
+	Label stepTxtL = new Label();
+	stepTxtL.setText("Number of time steps :");
+	stepTxtL.setMinWidth(50);
+	stepTxtL.setPrefWidth(250);
+	stepTxtL.setMaxWidth(400);
+	stepTxtL.setTextFill(Color.WHITE);
+	components.add(stepTxtL);
 	TextField seedTxt = new TextField();
-	seedTxt.setPromptText("Enter random seed");
+	//seedTxt.setPromptText("Enter random seed");
 	seedTxt.setMinWidth(50);
 	seedTxt.setPrefWidth(250);
 	seedTxt.setMaxWidth(400);
 	components.add(seedTxt);
+	Label seedTxtL = new Label();
+	seedTxtL.setText("Enter random seed");
+	seedTxtL.setMinWidth(50);
+	seedTxtL.setPrefWidth(250);
+	seedTxtL.setMaxWidth(400);
+	seedTxtL.setTextFill(Color.WHITE);
+	components.add(seedTxtL);
 	final TextField runStatsTF = new TextField();
-	runStatsTF.setPromptText("This is where stats will be displayed");
 	runStatsTF.setMinWidth(50);
 	runStatsTF.setPrefWidth(250);
 	runStatsTF.setMaxWidth(400);
+	runStatsTF.setEditable(false);
 	components.add(runStatsTF);
+	Label runStatsTFL = new Label();
+	runStatsTFL.setText("This is where stats will be displayed");
+	runStatsTFL.setMinWidth(50);
+	runStatsTFL.setPrefWidth(250);
+	runStatsTFL.setMaxWidth(400);
+	runStatsTFL.setTextFill(Color.WHITE);
+	components.add(runStatsTFL);
 	Button runStatsBtn = new Button();
 	components.add(runStatsBtn);
-	//Text runStatsText = new Text();
-	//runStatsText.setEditable(false);
-	//name.setPrefColumnCount(10);
 //Create grid
 	AnchorPane grid = new AnchorPane();
 	GridWorld.drawLines(grid);
@@ -171,7 +221,6 @@ public class Main extends Application {
     	public void handle(ActionEvent event){
     		String s = Critter.runStats(Critter.getPopulation());
     		runStatsTF.setPromptText(s);
-    	//	runStatsText.setText(s);
     	}
     });
 	quitBtn.setText("Quit");
@@ -240,49 +289,70 @@ public class Main extends Application {
     				seedTxt.clear();
     				seedTxt.setPromptText("Invalid: only #s");
     			}
-
     		}
     	}
     });
     makeBtn.setText("Make");
-    
-//    btn0.setOnAction(new EventHandler<ActionEvent>() {
-//        @Override
-//        public void handle(ActionEvent event) {
-//            counter++;
-//            userTextField = new TextField(counter+ " ");
-//            anchorPane.getChildren().get(6);
-//            = new TextField(counter+ " ");
-//        }
-//    });
-    
+    makeBtn.setOnAction(new EventHandler<ActionEvent>(){
+    	public void handle(ActionEvent event){
+    		String s =comboBox.getSelectionModel().getSelectedItem();
+    		System.out.println(s);
+    		int runs =Integer.parseInt(makeTxtN.getText());
+    		System.out.println(runs);
+    		for(int i=0;i<runs;i++)
+    		{
+    			try{
+    				Critter.makeCritter(s);
+    			}
+    			catch(InvalidCritterException e)
+    			{
+    			}
+    		}
+    		anchorPane.getChildren().clear();
+    		anchorPane.getChildren().addAll(components);
+    		GridWorld.drawCritters(anchorPane);
+            String st = Critter.runStats(Critter.getPopulation());
+            runStatsTF.setPromptText(st);
+    	}
+    });
     anchorPane.getChildren().addAll(components);
 
 	GridWorld.drawCritters(anchorPane);
     anchorPane.setBottomAnchor(quitBtn,200.0);
     anchorPane.setBottomAnchor(stepBtn,300.0);
     anchorPane.setBottomAnchor(seedBtn,500.0);
-    anchorPane.setBottomAnchor(makeBtn,400.0);
+    anchorPane.setBottomAnchor(makeBtn,450.0);
     anchorPane.setBottomAnchor(anBtn,600.0);
     anchorPane.setRightAnchor(quitBtn,300.0);
     anchorPane.setRightAnchor(stepBtn,300.0);
     anchorPane.setRightAnchor(seedBtn,300.0);
     anchorPane.setRightAnchor(makeBtn,300.0);
     anchorPane.setRightAnchor(anBtn, 300.0);
-    anchorPane.setBottomAnchor(anTxt,600.0);
+    anchorPane.setBottomAnchor(anTxt,625.0);
     anchorPane.setRightAnchor(anTxt,25.0);
+    anchorPane.setBottomAnchor(anTxtTBE,600.0);
+    anchorPane.setRightAnchor(anTxtTBE,25.0);
     anchorPane.setBottomAnchor(stepTxt,300.0);
     anchorPane.setRightAnchor(stepTxt,25.0);
+    anchorPane.setBottomAnchor(stepTxtL,325.0);
+    anchorPane.setRightAnchor(stepTxtL,25.0);
     anchorPane.setBottomAnchor(seedTxt, 500.0);
     anchorPane.setRightAnchor(seedTxt,25.0);
+    anchorPane.setBottomAnchor(seedTxtL, 525.0);
+    anchorPane.setRightAnchor(seedTxtL,25.0);
+    anchorPane.setBottomAnchor(comboBox, 450.0);
+    anchorPane.setRightAnchor(comboBox, 25.0);
+    anchorPane.setBottomAnchor(makeTxtNL, 425.0);
+    anchorPane.setRightAnchor(makeTxtNL,25.0);
+    anchorPane.setBottomAnchor(makeTxtN, 400.0);
+    anchorPane.setRightAnchor(makeTxtN,25.0);
     anchorPane.setRightAnchor(runStatsTF, 25.0);
     anchorPane.setBottomAnchor(runStatsTF, 350.0);
+    anchorPane.setRightAnchor(runStatsTFL, 25.0);
+    anchorPane.setBottomAnchor(runStatsTFL, 375.0);
     anchorPane.setRightAnchor(runStatsBtn,300.0);
     anchorPane.setBottomAnchor(runStatsBtn,350.0);
-   // anchorPane.setRightAnchor(runStatsText, 200.0);
-   // anchorPane.setBottomAnchor(runStatsText, 200.0);
-    Scene scene = new Scene(anchorPane, 1000, 650);
-   primaryStage.setScene(scene);
+   primaryStage.setScene(new Scene(anchorPane, 1000, 650));
    primaryStage.show();
 
 	 }
