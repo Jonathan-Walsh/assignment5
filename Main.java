@@ -13,6 +13,7 @@
 package assignment5;
 
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -22,6 +23,7 @@ import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Control;
 import javafx.stage.Stage;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
@@ -44,73 +46,78 @@ public class Main extends Application {
 	
 	 public int counter=1;
 	 public int totalcount=0;
-	 public TextField userTextField;
 	 public AnchorPane anchorPane = new AnchorPane();
-	 public AnchorPane grid = new AnchorPane();
-	 
+	
 	 
 	 @SuppressWarnings("static-access")
 	public void start(Stage primaryStage) {
 		 
 //Sets the color of the anchorPane to burnt orange
 	anchorPane.setStyle("-fx-background-color: #cf5300");
-//Initialize all of the buttons
-	Button btn0 = new Button();
-	Button btn1 = new Button();
-	Button btn2 = new Button();
-	Button btn3 = new Button();
-	Button btn4 = new Button();
-	Button btn5 = new Button();
-	TextField stepText = new TextField();
-	stepText.setPromptText("Number of time steps (Default: 1)");
-
+	
+//Initialize all of the buttons and other components
+	ArrayList<Node> components = new ArrayList<Node>();
+	Button quitBtn = new Button();
+	components.add(quitBtn);
+	Button stepBtn = new Button();
+	components.add(stepBtn);
+	Button seedBtn = new Button();
+	components.add(seedBtn);
+	Button makeBtn = new Button();
+	components.add(makeBtn);
+	TextField stepTxt = new TextField();
+	stepTxt.setPromptText("Number of time steps : 1");
+	components.add(stepTxt);
+	TextField seedTxt = new TextField();
+	seedTxt.setPromptText("Enter random seed");
+	components.add(seedTxt);
 //Create grid
+	AnchorPane grid = new AnchorPane();
 	GridWorld.drawLines(grid);
 	anchorPane.setBottomAnchor(grid, 25.0);
 	anchorPane.setLeftAnchor(grid, 25.0);
-	
-	btn0.setText("Click to Increment");
-    btn0.setOnAction(new EventHandler<ActionEvent>() {
-   	 
-        @Override
-        public void handle(ActionEvent event) {
-            counter++;
-        }
-    });
-    
+    components.add(grid);
 
-    btn1.setText("Quit");
-    btn1.setOnAction(new EventHandler<ActionEvent>() {
+	quitBtn.setText("Quit");
+	quitBtn.setOnAction(new EventHandler<ActionEvent>() {
     	public void handle(ActionEvent event) {
     		System.exit(0);
     	}
     });
     
- 
-    btn2.setText("Show");
-    btn2.setOnAction(new EventHandler<ActionEvent>(){
-    	
-    	public void handle(ActionEvent event){
-    		GridWorld.drawCritters(anchorPane);
-    	}
-    });
-    
- 
-    btn3.setText("Step");
-    btn3.setOnAction(new EventHandler<ActionEvent>(){
+	
+	/*
+	 * The step button takes one step by default
+	 * The user can use the stepTxt field to change the number of time steps
+	 * If their entry is < 0, the user is notified of an invalid input and time is not stepped forward
+	 * If their entry is not a number, he user is notified of an invalid input and time is not stepped forward
+	 */
+    stepBtn.setText("Step");
+    stepBtn.setOnAction(new EventHandler<ActionEvent>(){
     	public void handle(ActionEvent event){
     		anchorPane.getChildren().clear();
-    		anchorPane.getChildren().addAll(btn1,btn2,btn3,btn4,btn5,btn0,stepText,grid);
+    		anchorPane.getChildren().addAll(components);
     		int steps = 1;
     		try {
-    			steps = Integer.parseInt(stepText.getText());
+    			steps = Integer.parseInt(stepTxt.getText());
+    			if (steps < 0) {
+    				stepTxt.clear();
+    				stepTxt.setPromptText("Not a valid input!");
+    				steps = 0;
+    			}
     		}
     		catch (NumberFormatException e) {
-    			//Do nothing
+    			if (!stepTxt.getText().isEmpty()) {
+    				stepTxt.clear();
+    				stepTxt.setText("Not a valid input!");
+    				steps = 0;
+    			}
+    			else {
+    				stepTxt.setPromptText("Number of time steps : 1");
+    			}
+    			
     		}
-    		catch (NullPointerException e2) {
-    			//Do nothing
-    		}
+    		
     		for(int i=0;i<steps;i++){
     			Critter.worldTimeStep();
     		}
@@ -120,10 +127,25 @@ public class Main extends Application {
     	}
     });
     
+    seedBtn.setText("Seed");
+    seedBtn.setOnAction(new EventHandler<ActionEvent>(){
+    	public void handle(ActionEvent event){
+    		try {
+    			long seed = Long.parseLong(seedTxt.getText());
+    			Critter.setSeed(seed);
+    			seedTxt.setPromptText("Current seed : " + Long.toString(seed));
+    			seedTxt.clear();
+    		}
+    		catch (NumberFormatException e) {
+    			if (!seedTxt.getText().isEmpty()) {
+    				seedTxt.clear();
+    				seedTxt.setPromptText("Invalid: only #s");
+    			}
 
-    btn4.setText("Seed");
-
-    btn5.setText("Make");
+    		}
+    	}
+    });
+    makeBtn.setText("Make");
     
 //    btn0.setOnAction(new EventHandler<ActionEvent>() {
 //        @Override
@@ -135,24 +157,21 @@ public class Main extends Application {
 //        }
 //    });
     
-    anchorPane.getChildren().addAll(btn1,btn2,btn3,btn4,btn5,btn0,stepText, grid);
+    anchorPane.getChildren().addAll(components);
 
 	GridWorld.drawCritters(anchorPane);
-    anchorPane.setBottomAnchor(btn1,100.0);
-    anchorPane.setBottomAnchor(btn2,200.0);
-    anchorPane.setBottomAnchor(btn3,300.0);
-    anchorPane.setBottomAnchor(btn4,400.0);
-    anchorPane.setBottomAnchor(btn5,500.0);
-    anchorPane.setRightAnchor(btn1,200.0);
-    anchorPane.setRightAnchor(btn2,200.0);
-    anchorPane.setRightAnchor(btn3,200.0);
-    anchorPane.setRightAnchor(btn4,200.0);
-    anchorPane.setRightAnchor(btn5,200.0);
-    anchorPane.setBottomAnchor(btn0,300.0);
-    anchorPane.setRightAnchor(btn0,50.0);
-    anchorPane.setBottomAnchor(stepText,250.0);
-    anchorPane.setRightAnchor(stepText,75.0);
-   
+    anchorPane.setBottomAnchor(quitBtn,100.0);
+    anchorPane.setBottomAnchor(stepBtn,300.0);
+    anchorPane.setBottomAnchor(seedBtn,500.0);
+    anchorPane.setBottomAnchor(makeBtn,400.0);
+    anchorPane.setRightAnchor(quitBtn,200.0);
+    anchorPane.setRightAnchor(stepBtn,200.0);
+    anchorPane.setRightAnchor(seedBtn,200.0);
+    anchorPane.setRightAnchor(makeBtn,200.0);
+    anchorPane.setBottomAnchor(stepTxt,300.0);
+    anchorPane.setRightAnchor(stepTxt,35.0);
+    anchorPane.setBottomAnchor(seedTxt, 500.0);
+    anchorPane.setRightAnchor(seedTxt,35.0);
    primaryStage.setScene(new Scene(anchorPane, 1000, 650));
    primaryStage.show();
 
