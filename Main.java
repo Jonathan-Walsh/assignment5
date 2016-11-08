@@ -19,6 +19,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Polygon;
+import javafx.scene.shape.*;
 
 public class Main extends Application {
 
@@ -26,15 +27,13 @@ public class Main extends Application {
 		Critter.makeCritter("Craig");
 		for(int i=0;i<20;i++)
 			Critter.makeCritter("Critter2");
-		System.out.println(Critter.getPopulation().get(0).getXCoord());
-		System.out.println(Critter.getPopulation().get(0).getYCoord());
-		System.out.println(Critter.getPopulation().get(1).viewShape().toString());
 		launch(args);
 		
 		
 	}
 	
 	 public int counter=1;
+	 public int totalcount=0;
 	 public TextField userTextField;
 	 public AnchorPane anchorPane = new AnchorPane();
 	 @SuppressWarnings("static-access")
@@ -68,20 +67,9 @@ public class Main extends Application {
     btn2.setText("Show");
     btn2.setOnAction(new EventHandler<ActionEvent>(){
     	public void handle(ActionEvent event){
-    		
+
     		List<Critter> pop = Critter.getPopulation();
     		System.out.println(pop.size());
-    		List<Node> test = anchorPane.getChildren();
-    		Iterator<Node> it1 = test.iterator();
-    		for(int i=0;i<test.size();i++)
-    		{
-    			if(i>7) {	
-    				it1.remove();it1.next();
-    				}
-    			else {
-    				it1.next();
-    			}
-    		}
     		for(Critter c:pop)
     		{
     			double xTBP=100;
@@ -125,10 +113,10 @@ public class Main extends Application {
     				diamond.setFill(c.viewFillColor());
     				diamond.setStroke(c.viewOutlineColor());
     				diamond.getPoints().addAll(new Double[]{
-    				    0.0, 5.0,
-    				    5.0, 10.0,
-    				    10.0, 5.0,
-    				    5.0, 0.0 });
+    				    0.0, 2.5,
+    				    2.5, 5.0,
+    				    5.0, 2.5,
+    				    2.5, 0.0 });
     				anchorPane.getChildren().add(diamond);
     				anchorPane.setBottomAnchor(diamond, yTBP);
     			 	anchorPane.setLeftAnchor(diamond, xTBP);
@@ -154,6 +142,7 @@ public class Main extends Application {
             anchorPane.getChildren().add(6,userTextField);
             anchorPane.setBottomAnchor(userTextField,20.0);
             anchorPane.setRightAnchor(userTextField,400.0);
+            totalcount++;
     	}
     });
     
@@ -174,7 +163,26 @@ public class Main extends Application {
 	GridPane gridPane = new GridPane();
 	gridPane.setGridLinesVisible(true);
 	gridPane.setStyle("-fx-background-color: white; -fx-grid-lines-visible: true");
+
     anchorPane.getChildren().addAll(btn1,btn2,btn3,btn4,btn5,btn0,userTextField);
+	for(int i=0;i<100;i++)
+	{
+		Line line = new Line();
+		line.setStartX(100.0);
+		line.setStartY(i*6);
+		line.setEndX(700.0);
+		line.setEndY(i*6);
+		anchorPane.getChildren().add(line);
+	}
+	for(int i=0;i<100;i++)
+	{
+		Line line = new Line();
+		line.setStartX(100.0+i*6);
+		line.setStartY(0);
+		line.setEndX(100+i*6);
+		line.setEndY(600);
+		anchorPane.getChildren().add(line);
+	}
     anchorPane.setBottomAnchor(btn1,100.0);
     anchorPane.setBottomAnchor(btn2,100.0);
     anchorPane.setBottomAnchor(btn3,100.0);
