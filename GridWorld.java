@@ -42,7 +42,7 @@ public class GridWorld {
 		Rectangle background = new Rectangle(650.0, 650.0);
 		background.setFill(Color.GRAY);
 		anchorPane.getChildren().add(background);
-		AnchorPane.setBottomAnchor(background, 1.0);
+		AnchorPane.setBottomAnchor(background, 0.0);
 		AnchorPane.setLeftAnchor(background, 0.0);
 		for(int i=0;i<h + 1;i++)
 		{
@@ -83,11 +83,17 @@ public class GridWorld {
 	 * @param anchorPane : the anchorPane used in our Main.java
 	 * @param c : the current Critter that is being drawn
 	 */
+	@SuppressWarnings("static-access")
 	private static void drawCritter(AnchorPane anchorPane, Critter c) {
 		double xTBP=0;
 		double yTBP=650.0;
 		yTBP-=(c.getYCoord()*(650.0/h));
 		xTBP+=(c.getXCoord()*(650.0/w));
+		Rectangle bkgd = new Rectangle(6.0 * ((650.0/w) / 6.0),6.0 * ((650.0/h) / 6.0),Color.LIGHTGRAY);
+		bkgd.setStroke(Color.BLACK);
+		anchorPane.getChildren().add(bkgd);
+		anchorPane.setBottomAnchor(bkgd, yTBP);
+		anchorPane.setLeftAnchor(bkgd, xTBP);
 		if(c.viewShape().toString().equalsIgnoreCase("circle")) {
 			drawCircle(anchorPane, xTBP, yTBP, c);
 		}
@@ -136,14 +142,12 @@ public class GridWorld {
 	 */
 	@SuppressWarnings("static-access")
 	private static void drawSquare(AnchorPane anchorPane, double xTBP, double yTBP, Critter c) {
-		Rectangle square = new Rectangle(6.0 * ((650.0/w) / 6.0),6.0 * ((650.0/h) / 6.0),c.viewColor());
+		Rectangle square = new Rectangle(6.0 * ((650.0/w) / 6.0), 6.0 * ((650.0/h) / 6.0),c.viewColor());
 		square.setFill(c.viewFillColor());
 		square.setStroke(c.viewOutlineColor());
 		anchorPane.getChildren().add(square);
 		anchorPane.setBottomAnchor(square, yTBP);
 	 	anchorPane.setLeftAnchor(square, xTBP);
-	 	System.out.println(xTBP);
-	 	System.out.println(yTBP);
 	}
 	
 	/**
@@ -164,8 +168,8 @@ public class GridWorld {
 		    2.5 * ((650.0/w) / 6.0), 5.0 * ((650.0/h) / 6.0)
 		    });
 		anchorPane.getChildren().add(triangle);
-		anchorPane.setBottomAnchor(triangle, yTBP);
-	 	anchorPane.setLeftAnchor(triangle, xTBP + .25 * ((650.0/w) / 6.0));
+		anchorPane.setBottomAnchor(triangle, yTBP + .5* ((650.0/w) / 6.0));
+	 	anchorPane.setLeftAnchor(triangle, xTBP + .5 * ((650.0/w) / 6.0));
 	}
 	
 	/**
@@ -181,14 +185,14 @@ public class GridWorld {
 		diamond.setFill(c.viewFillColor());
 		diamond.setStroke(c.viewOutlineColor());
 		diamond.getPoints().addAll(new Double[]{
-		    0.0 * ((650.0/w) / 6.0), 2.5 * ((650.0/h) / 6.0),
-		    2.5 * ((650.0/w) / 6.0), 5.0 * ((650.0/h) / 6.0),
-		    5.0 * ((650.0/w) / 6.0), 2.5 * ((650.0/h) / 6.0),
-		    2.5 * ((650.0/w) / 6.0), 0.0 
+		    0.0 * ((650.0/w) / 6.0), 2.25 * ((650.0/h) / 6.0),
+		    2.25 * ((650.0/w) / 6.0), 4.5 * ((650.0/h) / 6.0),
+		    4.5 * ((650.0/w) / 6.0), 2.25 * ((650.0/h) / 6.0),
+		    2.25 * ((650.0/w) / 6.0), 0.0 
 		    });
 		anchorPane.getChildren().add(diamond);
-		anchorPane.setBottomAnchor(diamond, yTBP + .25 * ((650.0/h) / 6.0));
-	 	anchorPane.setLeftAnchor(diamond, xTBP + .25 * ((650.0/w) / 6.0));
+		anchorPane.setBottomAnchor(diamond, yTBP + .75 * ((650.0/h) / 6.0));
+	 	anchorPane.setLeftAnchor(diamond, xTBP + .75 * ((650.0/w) / 6.0));
 	}
 	
 	/**
@@ -206,18 +210,18 @@ public class GridWorld {
 		star.getPoints().addAll(new Double[] {
 			2.5 * ((650.0/w) / 6.0), 0.0 * ((650.0/h) / 6.0),
 			3.3 * ((650.0/w) / 6.0), 2.0 * ((650.0/h) / 6.0),
-			5.0 * ((650.0/w) / 6.0), 2.7 * ((650.0/h) / 6.0),
+			5.0 * ((650.0/w) / 6.0), 2.0 * ((650.0/h) / 6.0),
 			3.7 * ((650.0/w) / 6.0), 3.2 * ((650.0/h) / 6.0),
 			4.0 * ((650.0/w) / 6.0), 5.0 * ((650.0/h) / 6.0),
 			2.5 * ((650.0/w) / 6.0), 3.8 * ((650.0/h) / 6.0),
 			1.0 * ((650.0/w) / 6.0), 5.0 * ((650.0/h) / 6.0),
 			1.3 * ((650.0/w) / 6.0), 3.2 * ((650.0/h) / 6.0),
-			0.0 * ((650.0/w) / 6.0), 2.7 * ((650.0/h) / 6.0),
+			0.0 * ((650.0/w) / 6.0), 2.0 * ((650.0/h) / 6.0),
 			1.7 * ((650.0/w) / 6.0), 2.0 * ((650.0/h) / 6.0)
 		});
 		anchorPane.getChildren().add(star);
-		anchorPane.setBottomAnchor(star, yTBP + .12 * ((650.0/h) / 6.0));
-		anchorPane.setLeftAnchor(star, xTBP + .12 * ((650.0/w) / 6.0));
+		anchorPane.setBottomAnchor(star, yTBP + .5 * ((650.0/h) / 6.0));
+		anchorPane.setLeftAnchor(star, xTBP + .5 * ((650.0/w) / 6.0));
 	}
 	
 }

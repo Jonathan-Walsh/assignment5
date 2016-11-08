@@ -40,11 +40,12 @@ public class Main extends Application {
 
 	public static void main(String[] args) throws InvalidCritterException {
 		Critter.makeCritter("Craig");
-		for(int i=0;i<12;i++)
+		for(int i=0;i<12;i++) {
 			Critter.makeCritter("Critter1");
 			Critter.makeCritter("Critter2");
 			Critter.makeCritter("Critter3");
 			Critter.makeCritter("Critter4");
+		}
 		launch(args);
 	}
 	
