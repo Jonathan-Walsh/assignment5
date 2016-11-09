@@ -93,7 +93,8 @@ public class Main extends Application {
 			"Critter1",
 			"Critter2",
 			"Critter3",
-			"Critter4");
+			"Critter4",
+			"AlgaephobicCritter");
 	comboBox.setPromptText("Critter Type");
     comboBox.setEditable(true);
     comboBox.setPrefWidth(225);
@@ -102,24 +103,19 @@ public class Main extends Application {
     comboBox.setEditable(false);
 	components.add(comboBox);
 	Label anTxt = new Label();
-	anTxt.setText("Number of time steps per second:");
+	anTxt.setText("Animation Speed :");
 	anTxt.setMinWidth(50);
 	anTxt.setPrefWidth(225);
 	anTxt.setMaxWidth(400);
 	anTxt.setTextFill(Color.WHITE);
 	components.add(anTxt);
-	TextField anTxtTBE = new TextField();
-	anTxtTBE.setMinWidth(50);
-	anTxtTBE.setPrefWidth(225);
-	anTxtTBE.setMaxWidth(400);
-	components.add(anTxtTBE);
 	TextField makeTxtN = new TextField();
 	makeTxtN.setMinWidth(50);
 	makeTxtN.setPrefWidth(225);
 	makeTxtN.setMaxWidth(400);
 	components.add(makeTxtN);
 	Label makeTxtNL = new Label();
-	makeTxtNL.setText("Enter the number of  Critter to be created");
+	makeTxtNL.setText("Enter the number of Critters to be created : ");
 	makeTxtNL.setMinWidth(50);
 	makeTxtNL.setPrefWidth(225);
 	makeTxtNL.setMaxWidth(400);
@@ -144,7 +140,7 @@ public class Main extends Application {
 	seedTxt.setMaxWidth(400);
 	components.add(seedTxt);
 	Label seedTxtL = new Label();
-	seedTxtL.setText("Enter random seed");
+	seedTxtL.setText("Enter random seed : ");
 	seedTxtL.setMinWidth(50);
 	seedTxtL.setPrefWidth(225);
 	seedTxtL.setMaxWidth(400);
@@ -157,7 +153,7 @@ public class Main extends Application {
 	runStatsTF.setEditable(false);
 	components.add(runStatsTF);
 	Label runStatsTFL = new Label();
-	runStatsTFL.setText("This is where stats will be displayed");
+	runStatsTFL.setText("Critter Statistics : ");
 	runStatsTFL.setMinWidth(50);
 	runStatsTFL.setPrefWidth(225);
 	runStatsTFL.setMaxWidth(400);
@@ -173,6 +169,7 @@ public class Main extends Application {
 	slider.setMinorTickCount(4);
 	slider.setBlockIncrement(1);
 	slider.setSnapToTicks(true);
+	slider.setStyle("-fx-base: rgb(0, 0, 0)");
 	components.add(slider);
 //Create grid
 	AnchorPane grid = new AnchorPane();
@@ -188,11 +185,12 @@ public class Main extends Application {
 				@Override
 				protected Void call(){
 					Platform.runLater(new Runnable() {
-						  @Override public void run() {
-							  anchorPane.getChildren().clear();
-					    		anchorPane.getChildren().addAll(components);
-					    		Critter.worldTimeStep();
-					    		Critter.displayWorld();
+						  @Override 
+						  public void run() {
+							anchorPane.getChildren().clear();
+					    	anchorPane.getChildren().addAll(components);
+					    	Critter.worldTimeStep();
+					    	Critter.displayWorld();
 						  }
 					});
 		    		return null;
@@ -207,12 +205,30 @@ public class Main extends Application {
     	public void handle(ActionEvent event){
     		if (animation.getState() == State.READY){
     			animation.start();
+    			for (Node n : components) {
+    				if (n instanceof Control && n != anBtn && n != slider) {
+    					n.setDisable(true);
+    				}
+    			}
+    			anBtn.setText("Stop");
     		}
     		else if (animation.getState() == State.CANCELLED) {
     			animation.restart();
+    			for (Node n : components) {
+    				if (n instanceof Control && n != anBtn && n != slider) {
+    					n.setDisable(true);
+    				}
+    			}
+    			anBtn.setText("Stop");
     		}
     		else {
     			animation.cancel();
+    			for (Node n : components) {
+    				if (n instanceof Control && n != anBtn && n != slider) {
+    					n.setDisable(false);
+    				}
+    			}
+    			anBtn.setText("Animate");
     		}
     		
     	}
@@ -221,8 +237,8 @@ public class Main extends Application {
     slider.valueProperty().addListener(new ChangeListener<Number>() {
         public void changed(ObservableValue<? extends Number> ov,
             Number old_val, Number new_val) {
-        	if (new_val == (Number)0) {
-        		animation.setPeriod(Duration.INDEFINITE);
+        	if ((double) new_val < 1) {
+        		animation.setPeriod(Duration.seconds(15));
         	}
         	else {
                 animation.setPeriod(Duration.millis(3000.0/(double)new_val));
@@ -352,10 +368,8 @@ public class Main extends Application {
     anchorPane.setRightAnchor(anBtn, 265.0);
     anchorPane.setBottomAnchor(anTxt,575.0);
     anchorPane.setRightAnchor(anTxt,25.0);
-    anchorPane.setBottomAnchor(anTxtTBE,550.0);
-    anchorPane.setRightAnchor(anTxtTBE,25.0);
-    anchorPane.setBottomAnchor(slider, 600.0);
-    anchorPane.setRightAnchor(slider, 200.0);
+    anchorPane.setBottomAnchor(slider, 535.0);
+    anchorPane.setRightAnchor(slider, 120.0);
     anchorPane.setBottomAnchor(stepTxt,300.0);
     anchorPane.setRightAnchor(stepTxt,25.0);
     anchorPane.setBottomAnchor(stepTxtL,325.0);
