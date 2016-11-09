@@ -191,6 +191,8 @@ public class Main extends Application {
 					    	anchorPane.getChildren().addAll(components);
 					    	Critter.worldTimeStep();
 					    	Critter.displayWorld();
+					    	String s = Critter.runStats(Critter.getPopulation());
+				    		runStatsTF.setPromptText(s);
 						  }
 					});
 		    		return null;
@@ -356,12 +358,12 @@ public class Main extends Application {
     anchorPane.getChildren().addAll(components);
 
     Critter.displayWorld();
-    anchorPane.setBottomAnchor(quitBtn,200.0);
+    anchorPane.setBottomAnchor(quitBtn,25.0);
     anchorPane.setBottomAnchor(stepBtn,300.0);
     anchorPane.setBottomAnchor(seedBtn,500.0);
     anchorPane.setBottomAnchor(makeBtn,450.0);
     anchorPane.setBottomAnchor(anBtn,550.0);
-    anchorPane.setRightAnchor(quitBtn,265.0);
+    anchorPane.setRightAnchor(quitBtn,25.0);
     anchorPane.setRightAnchor(stepBtn,265.0);
     anchorPane.setRightAnchor(seedBtn,265.0);
     anchorPane.setRightAnchor(makeBtn,265.0);
