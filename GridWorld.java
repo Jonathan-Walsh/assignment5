@@ -87,10 +87,11 @@ public class GridWorld {
 	private static void drawCritter(AnchorPane anchorPane, Critter c) {
 		double xTBP=0;
 		double yTBP=650.0;
-		yTBP-=(c.getYCoord()*(650.0/h));
+		yTBP-=((c.getYCoord() + 1) *(650.0/h));
 		xTBP+=(c.getXCoord()*(650.0/w));
 		Rectangle bkgd = new Rectangle(6.0 * ((650.0/w) / 6.0),6.0 * ((650.0/h) / 6.0),Color.LIGHTGRAY);
 		bkgd.setStroke(Color.BLACK);
+
 		anchorPane.getChildren().add(bkgd);
 		anchorPane.setBottomAnchor(bkgd, yTBP);
 		anchorPane.setLeftAnchor(bkgd, xTBP);
@@ -162,14 +163,18 @@ public class GridWorld {
 		Polygon triangle = new Polygon();
 		triangle.setFill(c.viewFillColor());
 		triangle.setStroke(c.viewOutlineColor());
+		triangle.setStrokeWidth(10/w);
+		if (w > 50) {
+		triangle.setStrokeWidth(30/w);
+		}
 		triangle.getPoints().addAll(new Double[]{
 		    0.0, 0.0,
-		    5.0 * ((650.0/w) / 6.0), 0.0,
-		    2.5 * ((650.0/w) / 6.0), 5.0 * ((650.0/h) / 6.0)
+		    4.0 * ((650.0/w) / 6.0), 0.0,
+		    2.0 * ((650.0/w) / 6.0), 4.0 * ((650.0/h) / 6.0)
 		    });
 		anchorPane.getChildren().add(triangle);
-		anchorPane.setBottomAnchor(triangle, yTBP + .5* ((650.0/w) / 6.0));
-	 	anchorPane.setLeftAnchor(triangle, xTBP + .5 * ((650.0/w) / 6.0));
+		anchorPane.setBottomAnchor(triangle, yTBP + 1.0 * ((650.0/w) / 6.0));
+	 	anchorPane.setLeftAnchor(triangle, xTBP + 1.0 * ((650.0/w) / 6.0));
 	}
 	
 	/**
@@ -184,15 +189,19 @@ public class GridWorld {
 		Polygon diamond = new Polygon();
 		diamond.setFill(c.viewFillColor());
 		diamond.setStroke(c.viewOutlineColor());
+		diamond.setStrokeWidth(10/w);
+		if (w > 50) {
+			diamond.setStrokeWidth(30/w);
+		}
 		diamond.getPoints().addAll(new Double[]{
-		    0.0 * ((650.0/w) / 6.0), 2.25 * ((650.0/h) / 6.0),
-		    2.25 * ((650.0/w) / 6.0), 4.5 * ((650.0/h) / 6.0),
-		    4.5 * ((650.0/w) / 6.0), 2.25 * ((650.0/h) / 6.0),
-		    2.25 * ((650.0/w) / 6.0), 0.0 
+		    0.0 * ((650.0/w) / 6.0), 2.0 * ((650.0/h) / 6.0),
+		    2.0 * ((650.0/w) / 6.0), 4.0 * ((650.0/h) / 6.0),
+		    4.0 * ((650.0/w) / 6.0), 2.0 * ((650.0/h) / 6.0),
+		    2.0 * ((650.0/w) / 6.0), 0.0 
 		    });
 		anchorPane.getChildren().add(diamond);
-		anchorPane.setBottomAnchor(diamond, yTBP + .75 * ((650.0/h) / 6.0));
-	 	anchorPane.setLeftAnchor(diamond, xTBP + .75 * ((650.0/w) / 6.0));
+		anchorPane.setBottomAnchor(diamond, yTBP + 1 * ((650.0/h) / 6.0));
+	 	anchorPane.setLeftAnchor(diamond, xTBP + 1 * ((650.0/w) / 6.0));
 	}
 	
 	/**
@@ -207,6 +216,10 @@ public class GridWorld {
 		Polygon star = new Polygon();
 		star.setFill(c.viewFillColor());
 		star.setStroke(c.viewOutlineColor());
+		star.setStrokeWidth(10/w);
+		if (w > 50) {
+			star.setStrokeWidth(30/w);
+		}
 		star.getPoints().addAll(new Double[] {
 			2.5 * ((650.0/w) / 6.0), 0.0 * ((650.0/h) / 6.0),
 			3.3 * ((650.0/w) / 6.0), 2.0 * ((650.0/h) / 6.0),
@@ -220,8 +233,8 @@ public class GridWorld {
 			1.7 * ((650.0/w) / 6.0), 2.0 * ((650.0/h) / 6.0)
 		});
 		anchorPane.getChildren().add(star);
-		anchorPane.setBottomAnchor(star, yTBP + .5 * ((650.0/h) / 6.0));
-		anchorPane.setLeftAnchor(star, xTBP + .5 * ((650.0/w) / 6.0));
+		anchorPane.setBottomAnchor(star, yTBP + .5* ((650.0/h) / 6.0));
+	 	anchorPane.setLeftAnchor(star, xTBP + .5 * ((650.0/w) / 6.0));
 	}
 	
 }

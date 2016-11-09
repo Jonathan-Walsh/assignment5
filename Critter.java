@@ -214,7 +214,9 @@ public abstract class Critter {
 	
 	
 	
-	public static void displayWorld() {}
+	public static void displayWorld() {
+		GridWorld.drawCritters(Main.anchorPane);
+	}
 	
 	/* create and initialize a Critter subclass
 	 * critter_class_name must be the name of a concrete subclass of Critter, if not
