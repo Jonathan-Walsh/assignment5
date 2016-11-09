@@ -61,12 +61,23 @@ public abstract class Critter {
 		yToCheck += Params.world_height;
 		yToCheck %= Params.world_height;
 		
-		for (Critter c: population)
-		{
-			if ((c.energy > 0) && (c.x_coord == xToCheck) && (c.y_coord == yToCheck))
-				//TODO: Note in README that we don't remove Critters during fight, so we 
-				//      instead just check if they are dead
+		if (fightMode) {
+			for (Critter c: population){
+				if ((c.energy > 0) && (c.x_coord == xToCheck) && (c.y_coord == yToCheck)) {
+					//TODO: Note in README that we don't remove Critters during fight, so we 
+					//      instead just check if they are dead
+						return c.toString();
+				}
+			}
+		}
+		else {
+			int index = population.indexOf(this);
+			for (int i = 0; i < population.size(); i++) {
+				Critter c = population.get(i);
+				if (index != i && (c.energy > 0) && (c.x_coord == xToCheck) && (c.y_coord == yToCheck)) {
 					return c.toString();
+				}
+			}
 		}
 		return null;
 		}
@@ -275,7 +286,7 @@ public abstract class Critter {
 	public static String runStats(List<Critter> critters) {
 		String stats="";
 		//System.out.print("" + critters.size() + " critters as follows -- ");
-		stats+=("" + critters.size() + " critters as follows -- ");
+		stats+=("" + critters.size() + " critters as follows -- \n");
 		java.util.Map<String, Integer> critter_count = new java.util.HashMap<String, Integer>();
 		for (Critter crit : critters) {
 			String crit_string = crit.toString();
@@ -348,17 +359,22 @@ public abstract class Critter {
 			return babies;
 		}
 	
+	static int[] oldX;
+	static int[] oldY;
 	
 	public static void worldTimeStep() {
 		
 		//Do time step for all critters
-			List<Critter> tempPop = new java.util.ArrayList<Critter>();
-			tempPop.addAll(population);
-			//TODO: I don't think that this actually makes copies of the Critters, need to do that
-			for (Critter c: tempPop) {
+			oldX = new int[population.size()];
+			oldY = new int[population.size()];
+			for (int i = 0; i < population.size(); i++) {
+				Critter c = population.get(i);
+				oldX[i] = c.x_coord;
+				oldY[i] = c.y_coord;
+			}
+			for (Critter c: population) {
 				c.doTimeStep();			
 			}
-			population = tempPop;
 			
 		//Remove dead critters
 			Iterator<Critter> it0 = population.iterator();
@@ -451,7 +467,9 @@ public abstract class Critter {
 			for (int i = 0; i < Params.refresh_algae_count; i++) {
 				try {
 					makeCritter("Algae");
-				} catch (InvalidCritterException e) {
+					System.out.println("Hello");
+				} 
+				catch (InvalidCritterException e) {
 					e.printStackTrace();
 				}
 			}

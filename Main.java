@@ -19,6 +19,7 @@ import java.util.List;
 
 import javax.swing.JTextArea;
 
+import com.sun.org.apache.bcel.internal.util.ClassPath;
 
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -32,12 +33,9 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Control;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import javafx.scene.control.TextField;
 import javafx.scene.input.DragEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
@@ -87,6 +85,10 @@ public class Main extends Application {
 	Button anBtn= new Button();
 	components.add(anBtn);
 	final ComboBox<String> comboBox = new ComboBox<String>();
+	Class<?>[] types = Critter.class.getClasses();
+	for (Class c: types) {
+		System.out.println(c.toString());
+	}
 	comboBox.getItems().addAll(
 			"Craig",
 			"Algae",
@@ -115,7 +117,7 @@ public class Main extends Application {
 	makeTxtN.setMaxWidth(400);
 	components.add(makeTxtN);
 	Label makeTxtNL = new Label();
-	makeTxtNL.setText("Enter the number of Critters to be created : ");
+	makeTxtNL.setText("Enter number of Critters : ");
 	makeTxtNL.setMinWidth(50);
 	makeTxtNL.setPrefWidth(225);
 	makeTxtNL.setMaxWidth(400);
@@ -127,7 +129,7 @@ public class Main extends Application {
 	stepTxt.setMaxWidth(400);
 	components.add(stepTxt);
 	Label stepTxtL = new Label();
-	stepTxtL.setText("Number of time steps :");
+	stepTxtL.setText("Enter number of time steps :");
 	stepTxtL.setMinWidth(50);
 	stepTxtL.setPrefWidth(225);
 	stepTxtL.setMaxWidth(400);
@@ -148,8 +150,10 @@ public class Main extends Application {
 	components.add(seedTxtL);
 	final TextField runStatsTF = new TextField();
 	runStatsTF.setMinWidth(50);
-	runStatsTF.setPrefWidth(225);
+	runStatsTF.setPrefWidth(300);
 	runStatsTF.setMaxWidth(400);
+	String s = Critter.runStats(Critter.getPopulation());
+	runStatsTF.setText(s);
 	runStatsTF.setEditable(false);
 	components.add(runStatsTF);
 	Label runStatsTFL = new Label();
@@ -159,8 +163,6 @@ public class Main extends Application {
 	runStatsTFL.setMaxWidth(400);
 	runStatsTFL.setTextFill(Color.WHITE);
 	components.add(runStatsTFL);
-	Button runStatsBtn = new Button();
-	components.add(runStatsBtn);
 //Slider for animation
 	Slider slider = new Slider(0, 10, 1);
 	slider.setShowTickLabels(true);
@@ -192,7 +194,7 @@ public class Main extends Application {
 					    	Critter.worldTimeStep();
 					    	Critter.displayWorld();
 					    	String s = Critter.runStats(Critter.getPopulation());
-				    		runStatsTF.setPromptText(s);
+				    		runStatsTF.setText(s);
 						  }
 					});
 		    		return null;
@@ -248,13 +250,6 @@ public class Main extends Application {
         }
     });
     
-    runStatsBtn.setText("Run Stats");
-    runStatsBtn.setOnAction(new EventHandler<ActionEvent>(){
-    	public void handle(ActionEvent event){
-    		String s = Critter.runStats(Critter.getPopulation());
-    		runStatsTF.setPromptText(s);
-    	}
-    });
 	quitBtn.setText("Quit");
 	quitBtn.setOnAction(new EventHandler<ActionEvent>() {
     	public void handle(ActionEvent event) {
@@ -270,6 +265,7 @@ public class Main extends Application {
 	 * If their entry is not a number, he user is notified of an invalid input and time is not stepped forward
 	 */
     stepBtn.setText("Step");
+    stepTxt.setPromptText("Number of time steps : 1");
     stepBtn.setOnAction(new EventHandler<ActionEvent>(){
     	public void handle(ActionEvent event){
     		
@@ -278,6 +274,8 @@ public class Main extends Application {
     		int steps = 1;
     		try {
     			steps = Integer.parseInt(stepTxt.getText());
+    			stepTxt.clear();
+    			stepTxt.setPromptText("Number of time steps : " + Integer.toString(steps));
     			if (steps < 0) {
     				stepTxt.clear();
     				stepTxt.setPromptText("Not a valid input!");
@@ -287,11 +285,17 @@ public class Main extends Application {
     		catch (NumberFormatException e) {
     			if (!stepTxt.getText().isEmpty()) {
     				stepTxt.clear();
-    				stepTxt.setText("Not a valid input!");
+    				stepTxt.setPromptText("Not a valid input!");
     				steps = 0;
     			}
     			else {
-    				//stepTxt.setPromptText("Number of time steps : 1");
+    				if (stepTxt.getPromptText() == "Not a valid input!") { 
+    					stepTxt.setPromptText("Number of time steps : 1");
+    				}
+    				else {
+    					String[] txt = stepTxt.getPromptText().split(" ");
+    					steps = Integer.parseInt(txt[txt.length - 1]);
+    				}
     			}
     			
     		}
@@ -303,11 +307,12 @@ public class Main extends Application {
     		counter=1;
             totalcount++;
             String s = Critter.runStats(Critter.getPopulation());
-            runStatsTF.setPromptText(s);
+            runStatsTF.setText(s);
     	}
     });
     
     seedBtn.setText("Seed");
+    seedTxt.setPromptText("Current seed : none");
     seedBtn.setOnAction(new EventHandler<ActionEvent>(){
     	public void handle(ActionEvent event){
     		try {
@@ -324,22 +329,33 @@ public class Main extends Application {
     		}
     	}
     });
+    
     makeBtn.setText("Make");
+    makeTxtN.setPromptText("Number of Critters : 1");
     makeBtn.setOnAction(new EventHandler<ActionEvent>(){
     	public void handle(ActionEvent event){
     		String s =comboBox.getSelectionModel().getSelectedItem();
-    		System.out.println(s);
-    		int runs=0;
+    		int numCritters=0;
     		try{
-    		runs =Integer.parseInt(makeTxtN.getText());
+    			numCritters = Integer.parseInt(makeTxtN.getText());
+    			makeTxtN.clear();
+    			makeTxtN.setPromptText("Number of Critters : " + Integer.toString(numCritters));
+    			if (numCritters < 0) {
+    				numCritters = 0;
+    				makeTxtN.setPromptText("Not a valid input!");
+    			}
     		}
     		catch(NumberFormatException e)
     		{
-    			if(runs==0)
-    			{makeTxtN.setPromptText("Invalid input");}
+    			if (makeTxtN.getPromptText() == "Not a valid input!") { 
+    				makeTxtN.setPromptText("Number of Critters : 1");
+    			}
+    			else {
+    				String[] txt = makeTxtN.getPromptText().split(" ");
+    				numCritters = Integer.parseInt(txt[txt.length - 1]);
+    			}
     		}
-    		System.out.println(runs);
-    		for(int i=0;i<runs;i++)
+    		for(int i=0;i<numCritters;i++)
     		{
     			try{
     				Critter.makeCritter(s);
@@ -352,14 +368,14 @@ public class Main extends Application {
     		anchorPane.getChildren().addAll(components);
     		Critter.displayWorld();
     		String st = Critter.runStats(Critter.getPopulation());
-            runStatsTF.setPromptText(st);
+            runStatsTF.setText(st);
     	}
     });
     anchorPane.getChildren().addAll(components);
 
     Critter.displayWorld();
     anchorPane.setBottomAnchor(quitBtn,25.0);
-    anchorPane.setBottomAnchor(stepBtn,300.0);
+    anchorPane.setBottomAnchor(stepBtn,350.0);
     anchorPane.setBottomAnchor(seedBtn,500.0);
     anchorPane.setBottomAnchor(makeBtn,450.0);
     anchorPane.setBottomAnchor(anBtn,550.0);
@@ -371,10 +387,10 @@ public class Main extends Application {
     anchorPane.setBottomAnchor(anTxt,575.0);
     anchorPane.setRightAnchor(anTxt,25.0);
     anchorPane.setBottomAnchor(slider, 535.0);
-    anchorPane.setRightAnchor(slider, 120.0);
-    anchorPane.setBottomAnchor(stepTxt,300.0);
+    anchorPane.setRightAnchor(slider, 110.0);
+    anchorPane.setBottomAnchor(stepTxt,350.0);
     anchorPane.setRightAnchor(stepTxt,25.0);
-    anchorPane.setBottomAnchor(stepTxtL,325.0);
+    anchorPane.setBottomAnchor(stepTxtL,375.0);
     anchorPane.setRightAnchor(stepTxtL,25.0);
     anchorPane.setBottomAnchor(seedTxt, 500.0);
     anchorPane.setRightAnchor(seedTxt,25.0);
@@ -386,17 +402,21 @@ public class Main extends Application {
     anchorPane.setRightAnchor(makeTxtNL,25.0);
     anchorPane.setBottomAnchor(makeTxtN, 400.0);
     anchorPane.setRightAnchor(makeTxtN,25.0);
-    anchorPane.setRightAnchor(runStatsTF, 25.0);
-    anchorPane.setBottomAnchor(runStatsTF, 350.0);
-    anchorPane.setRightAnchor(runStatsTFL, 25.0);
-    anchorPane.setBottomAnchor(runStatsTFL, 375.0);
-    anchorPane.setRightAnchor(runStatsBtn,265.0);
-    anchorPane.setBottomAnchor(runStatsBtn,350.0);
+    anchorPane.setLeftAnchor(runStatsTF, 680.0);
+    anchorPane.setBottomAnchor(runStatsTF, 200.0);
+    anchorPane.setRightAnchor(runStatsTFL, 100.0);
+    anchorPane.setBottomAnchor(runStatsTFL, 225.0);
+
 
    primaryStage.setScene(new Scene(anchorPane, 1000, 650));
    primaryStage.show();
 
 	 }
 
+	public String getStats() {
+		String stats = new String();
+		stats+=("" + Critter.getPopulation().size() + " critters as follows -- \n");
+		return stats;
+	}
 	 
 }

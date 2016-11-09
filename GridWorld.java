@@ -71,7 +71,6 @@ public class GridWorld {
 	public static void drawCritters(AnchorPane anchorPane) {
 		//Add the Critters
 			List<Critter> pop = Critter.getPopulation();
-    		System.out.println(pop.size());
     		
     		for(Critter c:pop) {
     			GridWorld.drawCritter(anchorPane, c);
